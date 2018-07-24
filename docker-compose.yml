@@ -1,0 +1,34 @@
+version: '2'
+
+services:
+    mysql:
+        build:
+            context: .docker/mysql
+        ports:
+            - 3306:3306
+        environment:
+            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+            MYSQL_DATABASE: ${MYSQL_DATABASE}
+            MYSQL_USER: ${MYSQL_USER}
+            MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    php:
+        build:
+            context: .docker/php
+            args:
+                TIMEZONE: ${TIMEZONE}
+                UPLOAD_MAX_FILESIZE: ${UPLOAD_MAX_FILESIZE}
+                POST_MAX_SIZE: ${POST_MAX_SIZE}
+        links:
+            - mysql
+        ports:
+            - 80:80
+        volumes:
+          - .:/var/www/html
+          - ./var/logs:/var/www/html/var/logs
+          - ./var/cache.:/var/www/html/var/cache
+
+    adminer:
+        image: adminer
+        restart: always
+        ports:
+          - 8080:8080
