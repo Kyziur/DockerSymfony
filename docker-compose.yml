@@ -11,6 +11,9 @@ services:
             MYSQL_DATABASE: ${MYSQL_DATABASE}
             MYSQL_USER: ${MYSQL_USER}
             MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+
+        volumes:
+          - ./docker/mysql/my.cnf:/etc/mysql/conf.d
     php:
         build:
             context: .docker/php
@@ -23,12 +26,10 @@ services:
         ports:
             - 80:80
         volumes:
-          - .:/var/www/html
-          - ./var/logs:/var/www/html/var/logs
-          - ./var/cache.:/var/www/html/var/cache
-
+          - .:/var/www/html:delegated
     adminer:
-        image: adminer
-        restart: always
-        ports:
-          - 8080:8080
+          build:
+              context: .docker/adminer
+          restart: always
+          ports:
+            - 8080:8080

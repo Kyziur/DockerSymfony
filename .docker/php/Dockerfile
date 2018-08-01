@@ -26,6 +26,11 @@ RUN printf '[PHP]\ndate.timezone = "%s"\n', ${TIMEZONE} > /usr/local/etc/php/con
 RUN printf "[PHP]\nupload_max_filesize = %s\n" "${UPLOAD_MAX_FILESIZE}" > /usr/local/etc/php/conf.d/upload_max_filesize.ini
 RUN printf "[PHP]\npost_max_size = %s\n" "${POST_MAX_SIZE}" > /usr/local/etc/php/conf.d/post_max_size.ini
 
+RUN rm -rf ./app/cache/*
+RUN rm -rf ./app/logs/*
+
+RUN chmod -R 777 /var/www/html/
+
 RUN a2enmod rewrite
 ADD myapp.conf /etc/apache2/sites-available/000-default.conf
 ADD php.ini /usr/local/etc/php/php.ini
